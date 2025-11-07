@@ -1,2 +1,15 @@
 .idea
-*.jpg
+# test/MNIST/num_0/*.jpg
+test/MNIST/num_1/*.jpg
+test/MNIST/num_2/*.jpg
+test/MNIST/num_3/*.jpg
+test/MNIST/num_4/*.jpg
+test/MNIST/num_5/*.jpg
+test/MNIST/num_6/*.jpg
+test/MNIST/num_7/*.jpg
+test/MNIST/num_8/*.jpg
+test/MNIST/num_9/*.jpg
+
+src/__pycache__/
+
+*.pth
