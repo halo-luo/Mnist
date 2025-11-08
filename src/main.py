@@ -77,6 +77,7 @@ def train(model, loader, optimizer, _epochs):
                 print('Train Epoch: {}, Loss: {:.6f}'.format(_epochs, total_loss / len(loader)))
         avg_loss = total_loss / len(loader)
         print('Train Epoch: {}, Avg loss: {:.6f}'.format(_epochs, avg_loss))
+        
     return model
 
 
@@ -103,4 +104,6 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     model = train(model, train_loader, optimizer, epochs)
+    acc = test(model, test_loader)
+    print(f"test data predict acc :{acc}")
     torch.save(model.state_dict(), 'model.pth')
