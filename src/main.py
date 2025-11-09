@@ -27,7 +27,7 @@ class MyNet(nn.Module):
 
             nn.Linear(64 * 6 * 6, 512),
             nn.Linear(512, 10),
-            nn.Softmax(),
+            nn.Softmax(dim=1),
         )
 
     def forward(self, x):
