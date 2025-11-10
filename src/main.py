@@ -84,7 +84,7 @@ def train(model, loader, optimizer, _epochs):
 if __name__ == '__main__':
     batch_size = 64
     learning_rate = 0.001
-    epochs = 5
+    epochs = 50
 
     train_dataset = load_dataset("../data/train", True)
     test_dataset = load_dataset('../data/test/', False)

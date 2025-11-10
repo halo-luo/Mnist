@@ -72,4 +72,5 @@ if __name__ == '__main__':
 
     predict_result = predict_many(model, data)
     # print(predict_result)
-    print(predict_result == target)
+    acc_count = predict_result.eq(target.view_as(predict_result)).sum().item()
+    print(acc_count)
