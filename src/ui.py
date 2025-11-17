@@ -3,6 +3,19 @@ from tkinter import filedialog, messagebox, scrolledtext
 from PIL import Image, ImageTk
 # import pytesseract
 import os
+import numpy
+import torch
+from main import MyNet
+
+
+def read_img(img_path):
+    img = Image.open(img_path)
+    # print(img.size)
+    img = numpy.array(img)
+    img = torch.from_numpy(img).float()
+    img = img.unsqueeze(0)
+    img = img.unsqueeze(0)
+    return img
 
 
 # 如果你安装了 Tesseract 到非默认路径，取消下面注释并修改路径
@@ -24,6 +37,8 @@ class OCRApp:
         self.img_label = None
         self.text_result = None
         self.status = None
+
+        self.model = None
 
         self.create_widgets()
 
@@ -115,6 +130,15 @@ class OCRApp:
         #
         # finally:
         #     self.btn_ocr.config(state=tk.NORMAL)
+
+    def load_model(self, model_path):
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        print(f"Using device : {device}")
+
+        model_path = "./model.pth"
+        self.model = MyNet().to(device)
+        # model.load_state_dict(torch.load(model_path))
+        # print(f"load model successfully {model}")
 
 
 # ================== 启动程序 ==================
