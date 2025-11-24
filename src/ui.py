@@ -1,14 +1,16 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
-from xml.etree.ElementPath import prepare_descendant
-
 from PIL import Image, ImageTk
-# import pytesseract
 import os
 import numpy
 import torch
 from main import MyNet
 import logging
+
+
+def get_code_path():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    return current_dir
 
 
 def read_img(img_path):
@@ -21,13 +23,10 @@ def read_img(img_path):
     return img
 
 
-# 如果你安装了 Tesseract 到非默认路径，取消下面注释并修改路径
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
 class OCRApp:
     def __init__(self, root, model_path="model.pth"):
         self.root = root
-        self.root.title("图片文字识别工具 - OCR GUI")
+        self.root.title("手写数字识别界面 - GUI")
         self.root.geometry("900x700")
         self.root.configure(bg="#f0f0f0")
 
@@ -87,6 +86,7 @@ class OCRApp:
     def select_image(self):
         self.image_path = filedialog.askopenfilename(
             title="选择图片",
+            initialdir=f"{get_code_path()}/../test/MNIST/",
             filetypes=[
                 ("图片文件", "*.jpg *.jpeg *.png *.bmp *.webp *.tiff"),
                 ("所有文件", "*.*")
@@ -114,8 +114,6 @@ class OCRApp:
         self.status.config(text="正在识别...")
         self.text_result.delete(1.0, tk.END)
 
-        print("运行ocr")
-
         # 加载模型
         self.load_model(self.model_path)
 
@@ -128,11 +126,9 @@ class OCRApp:
         try:
 
             output = self.predict_one(img_tensor)
-            print(output)
+            # print(output)
             pred = output.argmax(dim=1, keepdim=True)[0, 0]
 
-            # 执行 OCR
-            # text = pytesseract.image_to_string(img, lang=lang)
             # # 显示结果
             self.text_result.insert(tk.END, f"{output}\n识别结果是：{pred}")
             self.status.config(text="识别完成！双击可复制文本")
