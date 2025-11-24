@@ -23,7 +23,7 @@ def read_img(img_path):
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 class OCRApp:
-    def __init__(self, root):
+    def __init__(self, root, model_path="model.pth"):
         self.root = root
         self.root.title("图片文字识别工具 - OCR GUI")
         self.root.geometry("900x700")
@@ -40,6 +40,8 @@ class OCRApp:
         self.status = None
 
         self.model = None
+        self.model_path = model_path
+        self.device = None
 
         self.create_widgets()
 
@@ -110,27 +112,29 @@ class OCRApp:
         self.status.config(text="正在识别...")
         self.text_result.delete(1.0, tk.END)
 
-        # try:
-        #     # 读取图片
-        #     img = Image.open(self.image_path)
-        #
-        #     # 自动下载中文语言包（如果没装）
-        #     lang = 'chi_sim+eng'  # 中文简体 + 英文
-        #     # pytesseract 会自动处理语言包下载（需要网络）
-        #
-        #     # 执行 OCR
-        #     text = pytesseract.image_to_string(img, lang=lang)
-        #
-        #     # 显示结果
-        #     self.text_result.insert(tk.END, text if text.strip() else "（未识别到文字）")
-        #     self.status.config(text="识别完成！双击可复制文本")
-        #
-        # except Exception as e:
-        #     messagebox.showerror("识别失败", f"OCR 出错：{e}")
-        #     self.status.config(text="识别失败")
-        #
-        # finally:
-        #     self.btn_ocr.config(state=tk.NORMAL)
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        try:
+            # 读取图片
+            img_tensor = read_img(self.image_path)
+            img_tensor = img_tensor.to(device)
+
+            # 加载模型
+            self.load_model(self.model_path)
+
+            # 执行 OCR
+            # text = pytesseract.image_to_string(img, lang=lang)
+            #
+            # # 显示结果
+            # self.text_result.insert(tk.END, text if text.strip() else "（未识别到文字）")
+            # self.status.config(text="识别完成！双击可复制文本")
+
+        except Exception as e:
+            messagebox.showerror("识别失败", f"OCR 出错：{e}")
+            self.status.config(text="识别失败")
+
+        finally:
+            self.btn_ocr.config(state=tk.NORMAL)
 
     def load_model(self, model_path):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
