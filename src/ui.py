@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
+from xml.etree.ElementPath import prepare_descendant
+
 from PIL import Image, ImageTk
 # import pytesseract
 import os
@@ -112,24 +114,31 @@ class OCRApp:
         self.status.config(text="正在识别...")
         self.text_result.delete(1.0, tk.END)
 
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print("运行ocr")
+
+        # 加载模型
+        self.load_model(self.model_path)
+
+        # 读取图片
+        img_tensor = read_img(self.image_path)
+        img_tensor = img_tensor.to(self.device)
+        # print(img_tensor.device)
+        # print(f"{img_tensor.shape}{img_tensor.device}")
 
         try:
-            # 读取图片
-            img_tensor = read_img(self.image_path)
-            img_tensor = img_tensor.to(device)
 
-            # 加载模型
-            self.load_model(self.model_path)
+            output = self.predict_one(img_tensor)
+            print(output)
+            pred = output.argmax(dim=1, keepdim=True)[0, 0]
 
             # 执行 OCR
             # text = pytesseract.image_to_string(img, lang=lang)
-            #
             # # 显示结果
-            # self.text_result.insert(tk.END, text if text.strip() else "（未识别到文字）")
-            # self.status.config(text="识别完成！双击可复制文本")
+            self.text_result.insert(tk.END, f"{output}\n识别结果是：{pred}")
+            self.status.config(text="识别完成！双击可复制文本")
 
         except Exception as e:
+            print("识别失败")
             messagebox.showerror("识别失败", f"OCR 出错：{e}")
             self.status.config(text="识别失败")
 
@@ -137,13 +146,22 @@ class OCRApp:
             self.btn_ocr.config(state=tk.NORMAL)
 
     def load_model(self, model_path):
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        print(f"Using device : {device}")
+        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        device = torch.device('cpu')
+        self.device = device
+        # print(f"Using device : {device},{self.device}")
+        logging.info(f"Using device : {device},{self.device}")
 
-        self.model = MyNet().to(device)
+        self.model = MyNet().to(self.device)
         self.model.load_state_dict(torch.load(model_path))
-        print(f"load model successfully {self.model}")
-        logging.info("load model successfully")
+        # print(f"load model successfully.{self.model}")
+        logging.info("load model successfully.")
+
+    def predict_one(self, img):
+        self.model.eval()
+        with torch.no_grad():
+            output = self.model(img)
+        return output
 
 
 # ================== 启动程序 ==================
