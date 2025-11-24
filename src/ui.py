@@ -6,6 +6,7 @@ import os
 import numpy
 import torch
 from main import MyNet
+import logging
 
 
 def read_img(img_path):
@@ -135,14 +136,23 @@ class OCRApp:
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         print(f"Using device : {device}")
 
-        model_path = "./model.pth"
         self.model = MyNet().to(device)
-        # model.load_state_dict(torch.load(model_path))
-        # print(f"load model successfully {model}")
+        self.model.load_state_dict(torch.load(model_path))
+        print(f"load model successfully {self.model}")
+        logging.info("load model successfully")
 
 
 # ================== 启动程序 ==================
 if __name__ == "__main__":
+    # 以当前模块名创建 logger（__name__ 是模块的全路径名）
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s %(name)-20s %(levelname)-8s %(message)s',
+        datefmt='%H:%M:%S'
+    )
+    logging.info("程序启动")
+
     init_windows = tk.Tk()
     app = OCRApp(init_windows)
     init_windows.mainloop()
