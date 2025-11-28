@@ -76,7 +76,7 @@ def train(model, loader, optimizer, _epochs):
             if batch_idx % 5000 == 0:
                 print('Train Epoch: {}, Loss: {:.6f}'.format(_epochs, total_loss / len(loader)))
         avg_loss = total_loss / len(loader)
-        print('Train Epoch: {}, Avg loss: {:.6f}'.format(_epochs, avg_loss))
+        print('Train Epoch: {}, Avg loss: {:.6f}'.format(epoch, avg_loss))
         
     return model
 
