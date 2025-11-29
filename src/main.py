@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torchvision
 from torch.utils.data import DataLoader
+import os
 
 
 class MyNet(nn.Module):
