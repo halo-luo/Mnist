@@ -3,7 +3,11 @@ import torch
 import torch.nn as nn
 import torchvision
 from torch.utils.data import DataLoader
+<<<<<<< Updated upstream
 import os
+=======
+from argparse import ArgumentParser
+>>>>>>> Stashed changes
 
 
 class MyNet(nn.Module):
@@ -75,10 +79,15 @@ def train(model, loader, optimizer, _epochs):
             optimizer.step()
             total_loss += loss.item()
             if batch_idx % 5000 == 0:
-                print('Train Epoch: {}, Loss: {:.6f}'.format(_epochs, total_loss / len(loader)))
+                print('Train Epoch: {}, Loss: {:.6f}'.format(epochs, total_loss / len(loader)))
         avg_loss = total_loss / len(loader)
+<<<<<<< Updated upstream
         print('Train Epoch: {}, Avg loss: {:.6f}'.format(epoch, avg_loss))
         
+=======
+        print('Train Epoch: {}, Avg loss: {:.6f}'.format(epochs, avg_loss))
+
+>>>>>>> Stashed changes
     return model
 
 
